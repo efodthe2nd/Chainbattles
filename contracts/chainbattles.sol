@@ -11,13 +11,13 @@ contract ChainBattles is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    mapping(unint256 => uint256) public tokenIdtoLevels;
+    mapping(uint256 => uint256) public tokenIdtoLevels;
 
     constructor() ERC721("Chain Battles", "CBTLS") {
 
     }
 
-    function generateCharacter(unint256 tokenId) public returns (string memory){
+    function generateCharacter(uint256 tokenId) public returns (string memory){
         bytes memory svg = abi.encodePacked(
             '<svg xmlns = "http://www.w3.org/2000/svg" preserveAspectRatio = "xMinYMin meet" viewBox="0 0 350 350">',
             '<style>.base {fill: white; font-family: serif; font-size: 14px; } </style>',
@@ -35,7 +35,7 @@ contract ChainBattles is ERC721URIStorage {
         );
     }
 
-    function getLevels(unint256 tokenId) public view returns(string memory) {
+    function getLevels(uint256 tokenId) public view returns(string memory) {
         uint256 levels = tokenIdtoLevels[tokenId];
         return levels.toString();
     }
@@ -58,7 +58,7 @@ contract ChainBattles is ERC721URIStorage {
     function mint() public {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _safemint(msg.sender, newItemId);
+        _safeMint(msg.sender, newItemId);
         tokenIdtoLevels[newItemId] = 0;
         _setTokenURI(newItemId, getTokenURI(newItemId));
     }
@@ -67,7 +67,7 @@ contract ChainBattles is ERC721URIStorage {
         require(_exists(tokenId), "Please use an existing token");
         require(ownerOf(tokenId) == msg.sender, "You must own this token to train it");
         uint256 currentLevel = tokenIdtoLevels[tokenId];
-        tokenIdtoLevels[tokenId] = currentLevels + 1;
+        tokenIdtoLevels[tokenId] = currentLevel + 1;
         _setTokenURI(tokenId, getTokenURI(tokenId));
     }
 }
