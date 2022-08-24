@@ -7,13 +7,25 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
 
-//Deployed at 0x6234847247AeF84CE02ea4bD83a0249FcCf03555
+//Deployed at 0xfFDDfda2c3b3f67c47816B4b3B96aAc90A907f8f
 contract ChainBattles is ERC721URIStorage {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     mapping(uint256 => uint256) public tokenIdtoLevels;
+    mapping(uint256 => uint256) public tokenIdtoSpeed;
+    mapping(uint256 => uint256) public tokenIdtoStrength;
+    mapping(uint256 => uint256) public tokenIdtoLife;
+
+    struct NftChange {
+        uint256 levels;
+        uint256 speed;
+        uint256 strength;
+        uint256 life;
+    }
+
+    NftChange nftChange;
 
     constructor() ERC721("Chain Battles", "CBTLS") {
 
@@ -37,9 +49,10 @@ contract ChainBattles is ERC721URIStorage {
         );
     }
 
-    function getLevels(uint256 tokenId) public view returns(string memory) {
-        uint256 levels = tokenIdtoLevels[tokenId];
-        return levels.toString();
+    function getLevels(uint256 tokenId) public returns(string memory) {
+        nftChange = NftChange(tokenIdtoLevels[tokenId]); // tokenIdtoSpeed[tokenId], tokenIdtoStrength[tokenId], tokenIdtoLife[tokenId]);
+
+        return nftChange.levels.toString();
     }
 
     function getTokenURI(uint256 tokenId) public returns (string memory) {
