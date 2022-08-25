@@ -40,6 +40,10 @@ contract ChainBattles is ERC721URIStorage {
             '<rect width="100%" height="100%" fill="black" />',
             '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">', "Warrior", '</text>',
             '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Levels: ",getLevels(), '</text>',
+            '<text x="50%" y="60%" class="base" dominant-baseline="middle" text-anchor="middle">', "Speed: ",getSpeed(), '</text>',
+            '<text x="50%" y="70%" class="base" dominant-baseline="middle" text-anchor="middle">', "Strength: ",getStrength(), '</text>',
+            '<text x="50%" y="80%" class="base" dominant-baseline="middle" text-anchor="middle">', "Life: ",getLife(), '</text>',
+
             '</svg>'
         );
 
@@ -50,12 +54,25 @@ contract ChainBattles is ERC721URIStorage {
             )
         );
     }
+
+    //Set values
     function setLevels(uint256 tokenId) public {
         nftChange = NftChange(tokenIdtoLevels[tokenId], tokenIdtoSpeed[tokenId], tokenIdtoStrength[tokenId], tokenIdtoLife[tokenId]);
     }
+    //Get values
     function getLevels() public view returns(string memory) {
         return nftChange.levels.toString();
     }
+    function getSpeed() public view returns(string memory) {
+        return nftChange.speed.toString();
+    }
+    function getStrength() public view returns(string memory) {
+        return nftChange.strength.toString();
+    }
+    function getLife() public view returns(string memory) {
+        return nftChange.life.toString();
+    }
+
 
     function getTokenURI(uint256 tokenId) public returns (string memory) {
         bytes memory dataURI = abi.encodePacked(
@@ -77,14 +94,24 @@ contract ChainBattles is ERC721URIStorage {
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
         tokenIdtoLevels[newItemId] = 0;
+        tokenIdtoSpeed[newItemId] = 100;
+        tokenIdtoStrength[newItemId] = 40;
+        tokenIdtoLife[newItemId] = 3;
         _setTokenURI(newItemId, getTokenURI(newItemId));
     }
 
     function train(uint256 tokenId) public {
         require(_exists(tokenId), "Please use an existing token");
         require(ownerOf(tokenId) == msg.sender, "You must own this token to train it");
+        //declare current attributes
         uint256 currentLevel = tokenIdtoLevels[tokenId];
+        uint256 currentSpeed = tokenIdtoSpeed[tokenId];
+        uint256 currentStrength = tokenIdtoStrength[tokenId];
+        uint256 currentLife = tokenIdtoLife[tokenId];
+        //add updates
         tokenIdtoLevels[tokenId] = currentLevel + 1;
+        tokenIdtoSpeed[tokenId] = currentSpeed + 100;
+        tokenIdtoStrength[tokenId] = currentStrength + 40;
         _setTokenURI(tokenId, getTokenURI(tokenId));
     }
 }
