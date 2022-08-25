@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
 
-//Deployed at 0xfFDDfda2c3b3f67c47816B4b3B96aAc90A907f8f
+//Deployed at 0x40c97d3C64f40DF8ade8A51479401ba277fF7aAa
 contract ChainBattles is ERC721URIStorage {
     using Strings for uint256;
     using Counters for Counters.Counter;
@@ -23,6 +23,7 @@ contract ChainBattles is ERC721URIStorage {
         uint256 speed;
         uint256 strength;
         uint256 life;
+
     }
 
     NftChange nftChange;
@@ -32,12 +33,13 @@ contract ChainBattles is ERC721URIStorage {
     }
 
     function generateCharacter(uint256 tokenId) public returns (string memory){
+        setLevels(tokenId);
         bytes memory svg = abi.encodePacked(
             '<svg xmlns = "http://www.w3.org/2000/svg" preserveAspectRatio = "xMinYMin meet" viewBox="0 0 350 350">',
             '<style>.base {fill: white; font-family: serif; font-size: 14px; } </style>',
             '<rect width="100%" height="100%" fill="black" />',
             '<text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">', "Warrior", '</text>',
-            '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Levels: ",getLevels(tokenId), '</text>',
+            '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">', "Levels: ",getLevels(), '</text>',
             '</svg>'
         );
 
@@ -48,10 +50,10 @@ contract ChainBattles is ERC721URIStorage {
             )
         );
     }
-
-    function getLevels(uint256 tokenId) public returns(string memory) {
-        nftChange = NftChange(tokenIdtoLevels[tokenId]); // tokenIdtoSpeed[tokenId], tokenIdtoStrength[tokenId], tokenIdtoLife[tokenId]);
-
+    function setLevels(uint256 tokenId) public {
+        nftChange = NftChange(tokenIdtoLevels[tokenId], tokenIdtoSpeed[tokenId], tokenIdtoStrength[tokenId], tokenIdtoLife[tokenId]);
+    }
+    function getLevels() public view returns(string memory) {
         return nftChange.levels.toString();
     }
 
